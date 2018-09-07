@@ -153,4 +153,13 @@ class MemcacheDataCollector extends DataCollector
     {
         return 'memcache';
     }
+
+    /**
+     * Resets this data collector to its initial state.
+     */
+    public function reset()
+    {
+        $this->pools = array();
+        $this->options = array();
+    }
 }
