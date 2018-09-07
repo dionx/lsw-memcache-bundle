@@ -25,7 +25,7 @@ class LswMemcacheExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('config.yml');
         if ($container->getParameter('kernel.debug')) {
             $loader->load('debug.yml');
@@ -34,13 +34,13 @@ class LswMemcacheExtension extends Extension
         if (isset($config['session'])) {
             $this->enableSessionSupport($config, $container);
         } else {
-        	$container->setParameter('memcache.session_handler.auto_load',false);
+            $container->setParameter('memcache.session_handler.auto_load', false);
         }
         if (isset($config['doctrine'])) {
-          $this->loadDoctrine($config, $container);
+            $this->loadDoctrine($config, $container);
         }
         if (isset($config['firewall'])) {
-        	$this->loadFirewall($config, $container);
+            $this->loadFirewall($config, $container);
         }
         if (isset($config['pools'])) {
             $this->addClients($config['pools'], $container);
@@ -50,7 +50,7 @@ class LswMemcacheExtension extends Extension
     /**
      * Enables session support using Memcache based on the configuration
      *
-     * @param string           $config    Configuration for bundle
+     * @param string $config Configuration for bundle
      * @param ContainerBuilder $container Service container
      *
      * @return void
@@ -85,7 +85,7 @@ class LswMemcacheExtension extends Extension
         $definition
             ->addArgument(new Reference(sprintf('memcache.%s', $pool)))
             ->addArgument($options);
-       	$this->addClassesToCompile(array($definition->getClass()));
+        // $this->addClassesToCompile(array($definition->getClass()));
     }
 
     /**
@@ -126,7 +126,7 @@ class LswMemcacheExtension extends Extension
             }
         }
     }
-    
+
     /**
      * Loads the Firewall configuration.
      *
@@ -135,37 +135,37 @@ class LswMemcacheExtension extends Extension
      */
     protected function loadFirewall(array $config, ContainerBuilder $container)
     {
-    	// make sure the pool is specified and it exists
-    	$pool = $config['firewall']['pool'];
-    	if (null === $pool) {
-    		return;
-    	}
-    	if (!isset($config['pools']) || !isset($config['pools'][$pool])) {
-    		throw new \LogicException(sprintf('The pool "%s" does not exist! Cannot enable the firewall!', $pool));
-    	}
-    	// calculate options
-    	$options = array();
-    	$options['prefix'] = $config['firewall']['prefix'];
-    	$options['concurrency']    = $config['firewall']['concurrency'];
-    	$options['spin_lock_wait'] = $config['firewall']['spin_lock_wait'];
-    	$options['lock_max_wait']  = $config['firewall']['lock_max_wait'];
-    	$options['reverse_proxies']  = $config['firewall']['reverse_proxies'];
-    	$options['x_forwarded_for']  = $config['firewall']['x_forwarded_for'];
-    	// load the firewall handler
-    	$definition = new Definition($container->getParameter('memcache.firewall_handler.class'));
-    	$container->setDefinition('memcache.firewall_handler', $definition);
-    	$definition
-    	    ->addArgument(new Reference(sprintf('memcache.%s', $pool)))
-    	    ->addArgument($options);
-    	$definition->addTag('kernel.event_listener', array('event'=>'kernel.request','method'=>'onKernelRequest'));
-    	$definition->addTag('kernel.event_listener', array('event'=>'kernel.terminate','method'=>'onKernelTerminate'));
-    	$this->addClassesToCompile(array($definition->getClass()));
+        // make sure the pool is specified and it exists
+        $pool = $config['firewall']['pool'];
+        if (null === $pool) {
+            return;
+        }
+        if (!isset($config['pools']) || !isset($config['pools'][$pool])) {
+            throw new \LogicException(sprintf('The pool "%s" does not exist! Cannot enable the firewall!', $pool));
+        }
+        // calculate options
+        $options = array();
+        $options['prefix'] = $config['firewall']['prefix'];
+        $options['concurrency'] = $config['firewall']['concurrency'];
+        $options['spin_lock_wait'] = $config['firewall']['spin_lock_wait'];
+        $options['lock_max_wait'] = $config['firewall']['lock_max_wait'];
+        $options['reverse_proxies'] = $config['firewall']['reverse_proxies'];
+        $options['x_forwarded_for'] = $config['firewall']['x_forwarded_for'];
+        // load the firewall handler
+        $definition = new Definition($container->getParameter('memcache.firewall_handler.class'));
+        $container->setDefinition('memcache.firewall_handler', $definition);
+        $definition
+            ->addArgument(new Reference(sprintf('memcache.%s', $pool)))
+            ->addArgument($options);
+        $definition->addTag('kernel.event_listener', array('event' => 'kernel.request', 'method' => 'onKernelRequest'));
+        $definition->addTag('kernel.event_listener', array('event' => 'kernel.terminate', 'method' => 'onKernelTerminate'));
+        // $this->addClassesToCompile(array($definition->getClass()));
     }
 
     /**
      * Adds memcache/memcache pools to the service contaienr
      *
-     * @param array            $pools   Array of pool configurations
+     * @param array $pools Array of pool configurations
      * @param ContainerBuilder $container Service container
      *
      * @throws \LogicException
@@ -180,8 +180,8 @@ class LswMemcacheExtension extends Extension
     /**
      * Creates a new Memcache definition
      *
-     * @param string           $name      Client name
-     * @param array            $config    Client configuration
+     * @param string $name Client name
+     * @param array $config Client configuration
      * @param ContainerBuilder $container Service container
      *
      * @throws \LogicException
@@ -211,7 +211,7 @@ class LswMemcacheExtension extends Extension
                 $memcache->addMethodCall('addServer', $server);
             }
         }
-        
+
         $memcache->addArgument($config['options']);
 
         $options = array();
