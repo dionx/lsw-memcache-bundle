@@ -1,5 +1,5 @@
 {
-    "name": "leaseweb/memcache-bundle",
+    "name": "dionx/lsw-memcache-bundle",
     "type": "symfony-bundle",
     "description": "Memcache Doctrine caching and session storage in the Web Debug Toolbar",
     "keywords": ["memcache","memcached","cache","session"],
